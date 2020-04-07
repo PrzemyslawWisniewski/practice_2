@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-progres-bar',
@@ -10,6 +10,9 @@ import { fromEvent } from 'rxjs';
 export class ProgresBarComponent implements OnInit {
   public widthPercent: number;
 
+  public scrollEvents$: Observable<Event>;
+  public progres$: Observable<number>;
+
   constructor() {}
 
   ngOnInit() {
@@ -18,7 +21,7 @@ export class ProgresBarComponent implements OnInit {
     const scrollEvents$ = fromEvent(document, 'scroll');
     const progres$ = scrollEvents$.pipe(map(({ target }: any) => this.calculateScrollPercent(target.documentElement)));
 
-    scrollEvents$.subscribe(console.log);
+    // scrollEvents$.subscribe(console.log);
 
     progres$.subscribe((percent) => {
       // progressBar.style.width = `${percent}`;
@@ -26,7 +29,7 @@ export class ProgresBarComponent implements OnInit {
     });
   }
 
-  public calculateScrollPercent(el: Element) {
+  public calculateScrollPercent(el: Element): number {
     const { scrollTop, scrollHeight, clientHeight } = el;
     return (scrollTop / (scrollHeight - clientHeight)) * 100;
   }

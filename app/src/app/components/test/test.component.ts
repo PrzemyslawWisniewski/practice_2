@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { range, of } from 'rxjs';
+import { range, of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-test',
@@ -7,6 +7,9 @@ import { range, of } from 'rxjs';
   styleUrls: ['./test.component.scss']
 })
 export class TestComponent implements OnInit {
+  public one: Observable<number>;
+  public two: Observable<string>;
+
   constructor() {}
 
   ngOnInit(): void {
@@ -26,5 +29,7 @@ export class TestComponent implements OnInit {
     // keyup$.subscribe(console.log);
     // filter$.subscribe(console.log);
     // keyupWithPluck$.subscribe(console.log);
+
+    one.subscribe(console.log);
   }
 }
