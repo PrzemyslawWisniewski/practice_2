@@ -28,17 +28,3 @@ export class AppComponent implements OnInit {
     // sourceXHR$.subscribe(observer);
   }
 }
-
-// const one = Rx.Observable(1,2,3,4,5);
-// const two = Rx.Observable('a', 'b', 'c', 'd', 'e');
-
-// const letterNumber = // return 1a2b3c4d5e ;
-// const oneThanTwo = // return 12345abcde ;
-// const ohMyThan = // return Oh My Heavens than 12345
-
-// letterNumber.subscribe(val => console.log(val));
-// oneThanTwo.subscribe(val => console.log(val));
-
-// function ohMyHeavens() {
-//   console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
-// }
