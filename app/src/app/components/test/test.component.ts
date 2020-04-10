@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { range, of, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { range, of, Observable, Subject, from, Subscription } from 'rxjs';
+import { takeUntil, reduce, scan, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-test',
@@ -23,7 +23,77 @@ export class TestComponent implements OnInit, OnDestroy {
     // const sourceXHR$ = from(fetch('https://api.github.com/users/octocat'));
     // const sourceYield$ = from(iterator);
 
-    one$.pipe(takeUntil(this.unsubscribeAll$)).subscribe(console.log);
+    // one$.pipe(takeUntil(this.unsubscribeAll$)).subscribe(console.log);
+
+    // this.reduceExample();
+    // this.scanExample();
+  }
+
+  private reduceExample(): Subscription {
+    const numbers = [1, 2, 3, 4, 5];
+
+    return from(numbers)
+      .pipe(
+        takeUntil(this.unsubscribeAll$),
+        reduce((acc, cur, i) => {
+          console.log('Reduce example: ', { acc, cur, i }, acc + cur);
+          return acc + cur;
+        }, 0)
+      )
+      .subscribe({
+        // next() {},
+        next: console.log,
+        error: console.error,
+        complete: () => console.log('Reduce Complete! ')
+      });
+  }
+
+  private scanExample(): [Subscription, Subscription] {
+    const numbers = [1, 2, 3, 4, 5];
+    const user = [
+      { name: 'Brian', loggedIn: false, token: null },
+      { name: 'Paul', loggedIn: true, token: 'abc' },
+      { name: 'Adam', loggedIn: true, token: '123' }
+    ];
+
+    const fromNumbers = from(numbers)
+      .pipe(
+        takeUntil(this.unsubscribeAll$),
+        scan((acc, cur, i) => {
+          console.log('Scan example_1: ', { acc, cur, i }, acc + cur);
+          return acc + cur;
+        }, 0)
+      )
+      .subscribe({
+        // next() {},
+        next: console.log,
+        error: console.error,
+        complete: () => console.log('Scan 1 Complete! ')
+      });
+
+    const fromUserState = from(user).pipe(
+      scan(
+        (acc, cur, i) => {
+          console.log('Scan example_2: ', { acc, cur, i });
+          return { ...acc, ...cur, i };
+        },
+        { name: null, loggedIn: null, token: null }
+      )
+    );
+
+    const state = fromUserState
+      .pipe(
+        takeUntil(this.unsubscribeAll$),
+        map((el) => el.name)
+      )
+      .subscribe({
+        // next() {},
+        next: console.log,
+        error: console.error,
+        complete: () => console.log('Scan 2 Complete! ')
+      });
+
+    return [fromNumbers, state];
   }
 
   ngOnDestroy(): void {
