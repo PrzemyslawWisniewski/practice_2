@@ -96,6 +96,59 @@ export class TestComponent implements OnInit, OnDestroy {
     return [fromNumbers, state];
   }
 
+  nestingFunction(resp) {
+    const response = {
+      items: [
+        {
+          id: 1,
+          title: 'Item 1',
+          parent_id: null
+        },
+        {
+          id: 2,
+          title: 'Item 2',
+          parent_id: 1
+        },
+        {
+          id: 3,
+          title: 'Item 3',
+          parent_id: 2
+        },
+        {
+          id: 4,
+          title: 'Item 4',
+          parent_id: null
+        },
+        {
+          id: 5,
+          title: 'Item 5',
+          parent_id: null
+        },
+        {
+          id: 6,
+          title: 'Item 6',
+          parent_id: 5
+        },
+        {
+          id: 7,
+          title: 'Item 7',
+          parent_id: 6
+        },
+        {
+          id: 8,
+          title: 'Item 8',
+          parent_id: 6
+        }
+      ]
+    };
+
+    const nest = (items, id = null, link = 'parent_id') =>
+      items.filter((item) => item[link] === id).map((item) => ({ ...item, children: nest(items, item.id) }));
+
+    console.log(nest(response));
+    return nest(response);
+  }
+
   ngOnDestroy(): void {
     this.unsubscribeAll$.next();
     this.unsubscribeAll$.complete();
